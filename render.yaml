@@ -1,0 +1,31 @@
+# Render Blueprint: Render reads this file and creates/updates all three resources.
+# Render does not run docker-compose.yml. Nginx, Prometheus and Grafana stay local;
+# Render's own load balancer does the routing and HTTPS that Nginx does locally.
+services:
+  - type: web
+    name: hospital-app
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hospital-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: hospital-cache
+          property: connectionString
+
+  - type: keyvalue
+    name: hospital-cache
+    plan: free
+    ipAllowList: [] # only reachable from other Render services
+
+databases:
+  - name: hospital-db
+    plan: free
+    databaseName: hospital
+    user: hospital
+    ipAllowList: [] # only reachable from other Render services

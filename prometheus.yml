@@ -6,3 +6,11 @@ scrape_configs:
     static_configs:
       - targets:
           - hospital-app:8000
+
+  # After deploying to Render, uncomment this and put your Render app's hostname
+  # in targets to monitor the cloud deployment from this local Prometheus.
+  # - job_name: hospital_app_render
+  #   scheme: https
+  #   static_configs:
+  #     - targets:
+  #         - your-app-name.onrender.com
